@@ -48,34 +48,35 @@ seotda_card = [
 ]
 
 made = {
-    1: ['3a', '8a'],
-    2: ['9a', '4a'],
-    3: ['1a', '3a'],
-    4: ['1a', '8a'],
-    5: ['9a', '4b'],
-    6: ['1a', '1b'],
-    7: ['2a', '2b'],
-    8: ['3a', '3b'],
-    9: ['4a', '4b'],
-    10: ['5a', '5b'],
-    11: ['6a', '6b'],
-    12: ['7a', '7b'],
-    13: ['8a', '8b'],
-    14: ['9a', '9b'],
-    15: ['10a', '10b'],
-    16: ['1a', '2a'],
-    17: ['1b', '2b'],
-    18: ['1a', '4a'],
-    19: ['1b', '4b'],
-    20: ['1a', '9a'],
-    21: ['1b', '9b'],
-    22: ['1a', '10a'],
-    23: ['1b', '10b'],
-    24: ['4a', '10a'],
-    25: ['4b', '10b'],
-    26: ['4a', '6a'],
-    27: ['4b', '6b'],
+    1: ["3a", "8a"],
+    2: ["9a", "4a"],
+    3: ["1a", "3a"],
+    4: ["1a", "8a"],
+    5: ["9a", "4b"],
+    6: ["1a", "1b"],
+    7: ["2a", "2b"],
+    8: ["3a", "3b"],
+    9: ["4a", "4b"],
+    10: ["5a", "5b"],
+    11: ["6a", "6b"],
+    12: ["7a", "7b"],
+    13: ["8a", "8b"],
+    14: ["9a", "9b"],
+    15: ["10a", "10b"],
+    16: ["1a", "2a"],
+    17: ["1b", "2b"],
+    18: ["1a", "4a"],
+    19: ["1b", "4b"],
+    20: ["1a", "9a"],
+    21: ["1b", "9b"],
+    22: ["1a", "10a"],
+    23: ["1b", "10b"],
+    24: ["4a", "10a"],
+    25: ["4b", "10b"],
+    26: ["4a", "6a"],
+    27: ["4b", "6b"],
 }
+
 
 @app.get("/")
 async def login(request: Request):
@@ -86,6 +87,7 @@ async def login(request: Request):
 def login(user_id: str = Form(...)):
     response = RedirectResponse("/board", status_code=status.HTTP_302_FOUND)
     response.set_cookie(key="user_id", value=user_id)
+    print(user_id)
     return response
 
 
@@ -209,7 +211,7 @@ async def set_game(sid, message):
     new_cards = copy.deepcopy(seotda_card)
     random.shuffle(new_cards)
     if is_take_bottom:
-        make_card = made[random.randrange(1,27)]
+        make_card = made[random.randrange(1, 27)]
         for card in make_card:
             new_cards.remove(card)
         await sio.emit(
@@ -219,7 +221,7 @@ async def set_game(sid, message):
                 "is_take_bottom": is_take_bottom,
                 "game_kind": game_kind,
                 "seotda_card": new_cards,
-                "made_card": make_card
+                "made_card": make_card,
             },
             room=room,
         )
