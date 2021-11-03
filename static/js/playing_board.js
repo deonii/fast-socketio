@@ -25,7 +25,11 @@ document.querySelector(".start_btn").addEventListener('click', function() {
 })
 
 socket.on('take_cards', function(msg) {
-  console.log(msg)
+  if (msg['is_take_bottom']) {
+    console.log(msg, '밑장뺌')
+  } else {
+    console.log(msg, '밑장 안뺌')
+  }
 })
 
 
@@ -131,63 +135,80 @@ socket.on("chat_event", function (message) {
 });
 
 // 처음 들어왔을때 기존 접속해있는 유저 정보
+var already_in_user = function(list) {
+  let hand_order = [2,3,1]
+  let order = hand_order.slice(3 - list.length)
+  for (var i =0; i<order.length; i++){
+    document.querySelector("#hand_" + order[i] + "_board").style.display = "block"
+    user_info[list[i]] ={
+      hand_num: order[i],
+      seed: 3000000,
+      left_finger: 5,
+    }
+    hand_info[order[i]] = list[i]
+    document.querySelector(".nick_"+ order[i]).innerText = list[0];
+  }
+}
+
 socket.on("in_the_room_player", function(msg) {
   console.log(msg)
-  if(msg['user_list'].length == 1){
-    document.querySelector("#hand_1_board").style.display = "block";
-    user_info[msg["user_list"][0]] = {
-        hand_num: 1,
-        seed: 3000000,
-        left_finger: 5,
-    };
-    hand_info[1] = msg["user_list"][0];
+  already_in_user(msg['user_list'])
+  
+  // if(msg['user_list'].length == 1){
+  //   document.querySelector("#hand_1_board").style.display = "block";
+  //   user_info[msg["user_list"][0]] = {
+  //       hand_num: 1,
+  //       seed: 3000000,
+  //       left_finger: 5,
+  //   };
+  //   hand_info[1] = msg["user_list"][0];
 
-  } else if (msg["user_list"].length == 2) {
-    document.querySelector("#hand_1_board").style.display = "block";
-    document.querySelector("#hand_3_board").style.display = "block";
-    user_info[msg["user_list"][1]] = {
-      hand_num: 1,
-      seed: 3000000,
-      left_finger: 5,
-    };
-    hand_info[1] = msg["user_list"][1];
+  // } else if (msg["user_list"].length == 2) {
+  //   document.querySelector("#hand_1_board").style.display = "block";
+  //   document.querySelector("#hand_3_board").style.display = "block";
+  //   user_info[msg["user_list"][1]] = {
+  //     hand_num: 1,
+  //     seed: 3000000,
+  //     left_finger: 5,
+  //   };
+  //   hand_info[1] = msg["user_list"][1];
 
-    user_info[msg["user_list"][0]] = {
-      hand_num: 3,
-      seed: 3000000,
-      left_finger: 5,
-    };
-    hand_info[3] = msg["user_list"][0];
-    document.querySelector(".nick_3").innerText = msg["user_list"][0];
+  //   user_info[msg["user_list"][0]] = {
+  //     hand_num: 3,
+  //     seed: 3000000,
+  //     left_finger: 5,
+  //   };
+  //   hand_info[3] = msg["user_list"][0];
+  //   document.querySelector(".nick_3").innerText = msg["user_list"][0];
 
-  } else if (msg["user_list"].length == 3) {
-    document.querySelector("#hand_1_board").style.display = "block";
-    document.querySelector("#hand_2_board").style.display = "block";
-    document.querySelector("#hand_3_board").style.display = "block";
-    user_info[msg["user_list"][2]] = {
-      hand_num: 1,
-      seed: 3000000,
-      left_finger: 5,
-    };
-    hand_info[1] = msg["user_list"][2];
+  // } else if (msg["user_list"].length == 3) {
+  //   document.querySelector("#hand_1_board").style.display = "block";
+  //   document.querySelector("#hand_2_board").style.display = "block";
+  //   document.querySelector("#hand_3_board").style.display = "block";
+  //   user_info[msg["user_list"][2]] = {
+  //     hand_num: 1,
+  //     seed: 3000000,
+  //     left_finger: 5,
+  //   };
+  //   hand_info[1] = msg["user_list"][2];
 
-    user_info[msg["user_list"][0]] = {
-      hand_num: 2,
-      seed: 3000000,
-      left_finger: 5,
-    };
-    hand_info[2] = msg["user_list"][0];
-    document.querySelector(".nick_2").innerText = msg["user_list"][0];
+  //   user_info[msg["user_list"][0]] = {
+  //     hand_num: 2,
+  //     seed: 3000000,
+  //     left_finger: 5,
+  //   };
+  //   hand_info[2] = msg["user_list"][0];
+  //   document.querySelector(".nick_2").innerText = msg["user_list"][0];
 
-    user_info[msg["user_list"][1]] = {
-      hand_num: 3,
-      seed: 3000000,
-      left_finger: 5,
-    };
-    hand_info[3] = msg["user_list"][1];
-    document.querySelector(".nick_3").innerText = msg["user_list"][1];
+  //   user_info[msg["user_list"][1]] = {
+  //     hand_num: 3,
+  //     seed: 3000000,
+  //     left_finger: 5,
+  //   };
+  //   hand_info[3] = msg["user_list"][1];
+  //   document.querySelector(".nick_3").innerText = msg["user_list"][1];
+  // }
 
-  }
     if (msg["in_game"]) {
       document.querySelector(".start_btn").style.display = "none";
     }

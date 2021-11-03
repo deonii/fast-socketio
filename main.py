@@ -9,6 +9,7 @@ import random
 from typing import Optional
 
 import socketio
+import copy
 
 
 app = FastAPI()
@@ -205,15 +206,20 @@ async def set_game(sid, message):
 
     players[room]["in_game"] = True
     players[room]["game_kind"] = game_kind
-    random.shuffle(seotda_card)
+    new_cards = copy.deepcopy(seotda_card)
+    random.shuffle(new_cards)
     if is_take_bottom:
+        make_card = made[random.randrange(1,27)]
+        for card in make_card:
+            new_cards.remove(card)
         await sio.emit(
             "take_cards",
             {
                 "first": user_id,
                 "is_take_bottom": is_take_bottom,
                 "game_kind": game_kind,
-                "seotda_card": seotda_card,
+                "seotda_card": new_cards,
+                "made_card": make_card
             },
             room=room,
         )
@@ -224,7 +230,7 @@ async def set_game(sid, message):
                 "first": user_id,
                 "is_take_bottom": is_take_bottom,
                 "game_kind": game_kind,
-                "seotda_card": seotda_card,
+                "seotda_card": new_cards,
             },
             room=room,
         )
