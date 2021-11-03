@@ -86,6 +86,21 @@ var enter_room = function(hand_num, user_id) {
         hand_info[hand_num] = user_id
 }
 
+var make_chat_cloud = function(code, message, user_id) {
+    let div1 = document.createElement("div");
+    div1.className = "one_chat";
+    let div2 = document.createElement("div");
+    div2.className = code;
+    if(code == 'event_bubble') {
+      div2.innerHTML = message;
+    } else {
+      div2.innerHTML = "<b>" + user_id + "</b><br/>" + message;
+    }
+    div1.appendChild(div2);
+    chat_cloud.appendChild(div1);
+    chat_scroll_down();
+}
+
 socket.on("chat_event", function (message) {
   user_id = message['user_id']
   if (message["code"] == "enter") {
