@@ -75,6 +75,17 @@ let chat_cloud = document.querySelector(".chat_cloud");
 // 1. enter 누군가 입장 
 // 2. chat_message 누군가로부터 메세지 받음
 // 3. leave 누군가 퇴장
+var enter_room = function(hand_num, user_id) {
+  document.querySelector(".nick_" + hand_num).innerText = user_id;
+  document.querySelector("#hand_" + hand_num + "_board").style.display = "block";
+        user_info[user_id] = {
+          hand_num: hand_num,
+          seed: 3000000,
+          left_finger: 5,
+        };
+        hand_info[hand_num] = user_id
+}
+
 socket.on("chat_event", function (message) {
   user_id = message['user_id']
   if (message["code"] == "enter") {
@@ -88,23 +99,25 @@ socket.on("chat_event", function (message) {
     chat_scroll_down();
     if(user_id_incookie != user_id){
       if(Object.keys(hand_info).indexOf('2') < 0){
-        document.querySelector("#hand_2_board").style.display = "block";
-        user_info[user_id] = {
-          hand_num: 2,
-          seed: 3000000,
-          left_finger: 5,
-        };
-        hand_info[2] = user_id
-        document.querySelector(".nick_2").innerText = user_id;
+        enter_room(2, user_id)
+        // document.querySelector("#hand_2_board").style.display = "block";
+        // user_info[user_id] = {
+        //   hand_num: 2,
+        //   seed: 3000000,
+        //   left_finger: 5,
+        // };
+        // hand_info[2] = user_id
+        // document.querySelector(".nick_2").innerText = user_id;
       } else if (Object.keys(hand_info).indexOf('3') < 0){
-        document.querySelector("#hand_3_board").style.display = "block";
-        user_info[user_id] = {
-          hand_num: 3,
-          seed: 3000000,
-          left_finger: 5,
-        };
-        hand_info[3] = user_id
-        document.querySelector(".nick_3").innerText = user_id;
+        enter_room(3, user_id)
+        // document.querySelector("#hand_3_board").style.display = "block";
+        // user_info[user_id] = {
+        //   hand_num: 3,
+        //   seed: 3000000,
+        //   left_finger: 5,
+        // };
+        // hand_info[3] = user_id
+        // document.querySelector(".nick_3").innerText = user_id;
       }
     }
   }
