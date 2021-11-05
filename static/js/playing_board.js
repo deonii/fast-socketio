@@ -112,8 +112,11 @@ socket.on('take_cards', function(msg) {
     console.log(msg, '밑장뺌')
   } else {
     console.log(msg, '밑장 안뺌')
-    handing_out_cards(msg['first'], msg['seotda_card'], msg['is_take_bottom'], msg['make_card'])
-    console.log(in_game)
+  }
+  handing_out_cards(msg['first'], msg['seotda_card'], msg['is_take_bottom'], msg['make_card'])
+  console.log(in_game)
+  if(msg['first'] == user_id_incookie) {
+    document.querySelector('.playing_btn').style.display = 'block';
   }
 })
 
