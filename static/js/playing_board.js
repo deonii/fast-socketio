@@ -83,6 +83,16 @@ document.querySelector(".start_btn").addEventListener('click', function() {
     showConfirmButton: false,
   })
 
+  // 게임 종류 선택
+  document.querySelector("#set_game").addEventListener('click',function () {
+    let game_kind = document.querySelector('#game_kind').value
+    let is_take_bottom = document.querySelector('#take_bottom').children[0].checked
+    socket.emit('set_game', {game_kind: game_kind, is_take_bottom: is_take_bottom, user_id : user_id_incookie, room: room_code})
+    Swal.clickConfirm();
+    console.log('set_game')
+  });
+})
+
 // 게임 시작 socket 메세지 받았을때
 socket.on('game_event', function(msg) {
   if(msg['code'] == 'game_start') {
@@ -96,42 +106,19 @@ socket.on('game_event', function(msg) {
   }
 })
 
-
-  // 게임 종류 선택
-  document.querySelector("#set_game").addEventListener('click',function () {
-    let game_kind = document.querySelector('#game_kind').value
-    let is_take_bottom = document.querySelector('#take_bottom').children[0].checked
-    socket.emit('set_game', {game_kind: game_kind, is_take_bottom: is_take_bottom, user_id : user_id_incookie, room: room_code})
-    Swal.clickConfirm();
-    console.log('set_game')
-  });
-})
-
 // 게임 시작 후 카드뭉치 받음
 socket.on('take_cards', function(msg) {
   if (msg['is_take_bottom']) {
     console.log(msg, '밑장뺌')
   } else {
     console.log(msg, '밑장 안뺌')
+    handing_out_cards(msg['first'], msg['seotda_card'])
+    console.log(in_game)
   }
 })
 
 
-// anime({
-//   targets: "img",
-//   translateY: 200,
-//   translateX: 200,
-//   //   function(){
-//   //       anime.random(0,100);
-//   //   },
-//   rotate: function () {
-//     return anime.random(-5, 5) + "turn";
-//   },
-//   duration: function () {
-//     return anime.random(1200, 1800);
-//   },
-//   easing: "easeInElastic(1, .6)",
-// });
+
 
 //메세지 보내는 함수 + 메세지 구름 생성
 document.querySelector("#chatting_form").addEventListener("submit", function (e) {
@@ -191,3 +178,39 @@ var make_chat_cloud = function(code, message, user_id) {
 var chat_scroll_down = function () {
   $(".middle").scrollTop($(".middle")[0].scrollHeight);
 };
+
+// 전체 인원 패 나누는 함수
+var handing_out_cards = function(first, cards, is_take_bottom){
+  let a = [...Object.keys(hand_info), ...Object.keys(hand_info)]
+  let first_hand = user_info[first].hand_num
+  let ordering = a.slice(first_hand -1).slice(0,Object.keys(hand_info).length)
+  console.log(ordering)
+  for(var i = 0; i <2; i++){
+    for(var j = 0; j < ordering.length;j++){
+      if(i ==0){
+        in_game[ordering[j]] = [cards.pop()]
+      } else {
+        in_game[ordering[j]].push(cards.pop())
+      }
+    }
+  }
+}
+
+// 패 나눠주는 애니메이션 함수
+var give_card_anime = function() {
+  anime({
+    targets: "img",
+    translateY: 200,
+    translateX: 200,
+    //   function(){
+    //       anime.random(0,100);
+    //   },
+    rotate: function () {
+      return anime.random(-5, 5) + "turn";
+    },
+    duration: function () {
+      return anime.random(1200, 1800);
+    },
+    easing: "easeInElastic(1, .6)",
+  });
+}

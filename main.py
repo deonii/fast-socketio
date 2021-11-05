@@ -117,7 +117,9 @@ async def disconnect(sid):
         user_id = players[room_name]["user_info"].get(sid)
         del players[room_name]["user_info"][sid]
         players[room_name]["user_list"].remove(user_id)
-
+        if len(players[room_name]["user_list"]) == 0:
+            del players[room_name]
+            print(room_name, "방 삭제됨")
         # 연결 해제 메세지 보냄
         await sio.emit(
             "chat_event",
