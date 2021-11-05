@@ -112,7 +112,7 @@ socket.on('take_cards', function(msg) {
     console.log(msg, '밑장뺌')
   } else {
     console.log(msg, '밑장 안뺌')
-    handing_out_cards(msg['first'], msg['seotda_card'])
+    handing_out_cards(msg['first'], msg['seotda_card'], msg['is_take_bottom'], msg['make_card'])
     console.log(in_game)
   }
 })
@@ -179,11 +179,17 @@ var chat_scroll_down = function () {
   $(".middle").scrollTop($(".middle")[0].scrollHeight);
 };
 
-// 전체 인원 패 나누는 함수
-var handing_out_cards = function(first, cards, is_take_bottom){
+// 전체 인원 처음 패 나누는 함수
+var handing_out_cards = function(first, cards, is_take_bottom, made_card){
   let a = [...Object.keys(hand_info), ...Object.keys(hand_info)]
   let first_hand = user_info[first].hand_num
   let ordering = a.slice(first_hand -1).slice(0,Object.keys(hand_info).length)
+  if (is_take_bottom) {
+    ordering = ordering.filter(function(item) {
+      return item != first_hand;
+  });
+    in_game[first_hand] = made_card
+  }
   console.log(ordering)
   for(var i = 0; i <2; i++){
     for(var j = 0; j < ordering.length;j++){
